@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'tic-tac-toe-client-five.vercel.app',
+    origin: 'https://tic-tac-toe-client-five.vercel.app',
   },
 });
 
