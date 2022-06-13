@@ -49,6 +49,9 @@ io.on('connection', (socket) => {
 });
 
 io.of('/').adapter.on('join-room', (room, id) => {
+  console.log('==============join-room============');
+  console.log('room: ', room);
+  console.log('id: ', id);
   io.to(room).emit('join-room', { room, id });
 });
 
