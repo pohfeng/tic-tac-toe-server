@@ -1,19 +1,25 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
+import { nanoid } from 'nanoid';
+import { Server } from 'socket.io';
+import express from 'express';
+import http from 'http';
 
-const { Server } = require('socket.io');
+const app = express();
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
   },
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 io.on('connection', (socket) => {
   console.log('a user connected: ', socket.id);
+
+  socket.on('create-room', () => {
+    const roomId = nanoid();
+    socket.join(roomId);
+  });
 
   socket.on('join', (roomId) => {
     const clients = io.sockets.adapter.rooms.get(roomId);
@@ -43,7 +49,7 @@ io.on('connection', (socket) => {
 });
 
 io.of('/').adapter.on('join-room', (room, id) => {
-  io.to(room).emit('join-room', id);
+  io.to(room).emit('join-room', { room, id });
 });
 
 io.of('/').adapter.on('leave-room', (room, id) => {
